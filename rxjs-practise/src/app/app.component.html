@@ -1,0 +1,42 @@
+
+<div class="container">
+  <div class="row">
+    <h1 class="text-center text-primary" >From Event</h1>
+    <div class="col-2">
+      <button class="btn btn-primary mr-1" #eventBtn >Click Me </button>
+      <button class="btn btn-danger" #clearBtn >Clear</button>
+    </div>
+    <div class="col-6">
+      <ul class="list-group">
+        <li *ngFor="let count of listCountArr"  class="list-group-item">
+          Event Clicked
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <h1 class="text-center text-primary" >Interval & Timer</h1>
+    <div class="interval-container col-6">
+      <p class="text-bold text-secondary h2">Interval</p>
+      <ul class="list-group" #intervalList></ul>
+    </div>
+    <div class="timer-container col-6">
+      <p class="text-bold text-secondary h2">Timer</p>
+      <ul class="list-group" #timerList></ul>
+    </div>
+  </div>
+  
+  <div class="row">
+    <h1 class="text-center text-primary" >of & from</h1>
+    <div class="of-container col-6">
+      <ul class="list-group" #ofList></ul>
+    </div>
+    <div class="of-container col-6">
+      <ul class="list-group" *ngFor="let animal of animalName$ | async">
+        <li>{{ animal }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
