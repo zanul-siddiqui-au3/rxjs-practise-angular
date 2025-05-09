@@ -20,5 +20,11 @@
    - FromEvent(domElementRef, eventName)
    - interval(timeOutInMs)
    - timer(delay, intervalTimeMs)
-   - of() convert multiple values as an observable but it takes argument seperately
-   - from() convert array, array of object, promises etc to an observable
+   - of() convert multiple values as an observable but it takes argument seperately of(1,2,3)
+   - from() convert array, array of object, promises etc to an observable and emit data indvidually from([1,2,3])
+   - toArray() it converts emitted data from an observable into an Array of emitted data when observable is completed
+   - map() it's a pipable operator which helps to modify emitted data by an observable
+   - pluck('object.key') it's a pipable operator helps to pick value from an object or even from nested object pluck ('child1',  'child2')
+   - filter() it's pipable operator helps filter emitted data i.e filter((data)=> data.length > 2)
+   - tap() it's a pipable operator which didn't modify/change emitted data it only uses for handling side effects like logging, debugging etc.
+   -takeUntil() it's a pipable operator emits a value by the source observable until notifier emits a value

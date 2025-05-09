@@ -28,13 +28,49 @@
   </div>
   
   <div class="row">
-    <h1 class="text-center text-primary" >of & from</h1>
+    <h1 class="text-center text-primary" >of & from & toArray</h1>
     <div class="of-container col-6">
       <ul class="list-group" #ofList></ul>
     </div>
     <div class="of-container col-6">
       <ul class="list-group" *ngFor="let animal of animalName$ | async">
         <li>{{ animal }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <h1 class="text-center text-primary mt-5" >Observable</h1>
+    <div class="col-6">
+      <p class="text-bold text-secondary">Ex- 01 Custom Observable</p>
+      <ul class="list-group">
+        <li *ngFor="let flower of flowersArr"  class="list-group-item">
+          {{flower}}
+        </li>
+      </ul>
+    </div>
+    <div class="col-6">
+      <p class="text-bold text-secondary">Ex- 01 Manual</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <h1 class="text-center text-primary mt-5" >Take, TakeLast, TakeUntil</h1>
+    <div class="col-6">
+      <p class="text-bold text-secondary">Take: </p>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let count of takeInterval$ | async">
+          {{ count }}
+        </li>
+      </ul>
+    </div>
+    <div class="col-6">
+      <p class="text-bold text-secondary">Take Until: </p>
+      <button class="btn btn-danger" (click)="handleStopUntil()">Stop Until</button>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let count of takeUntilInterval$| async">
+          {{ count }}
+        </li>
       </ul>
     </div>
   </div>

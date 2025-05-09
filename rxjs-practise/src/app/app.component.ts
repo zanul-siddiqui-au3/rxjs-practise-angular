@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, Renderer2, OnInit } from '@angular/core';
-import { from, fromEvent, interval, Observable, of, Subscription, timer } from 'rxjs';
+import { from, fromEvent, interval, map, Observable, Observer, of, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
 
 
 @Component({
@@ -23,7 +23,16 @@ export class AppComponent implements AfterViewInit, OnInit {
   studentName$ !: Observable<string>;
   @ViewChild('ofList', {static: true}) ofListRef!: ElementRef;
 
-  animalName$ !: Observable<string>;
+  animalName$ !:Observable<string[]>;
+
+  // Custom Observable
+  flower$ !: Observable<string>;
+  flowersArr: string[] = [];
+
+  // take,takeLast,takeUntil
+  takeInterval$: Observable<number[]> = interval(1000).pipe(take(5),toArray());
+  stopInterval$: Subject<boolean> = new Subject();
+  takeUntilInterval$: Observable<number[]> = interval(1000).pipe(takeUntil(this.stopInterval$),toArray());
 
   constructor(private readonly renderer: Renderer2){}
 
@@ -64,7 +73,8 @@ export class AppComponent implements AfterViewInit, OnInit {
   };
 
   ngOnInit(): void {
-    this.fromAndOf()
+    this.fromAndOf();
+    this.createObservable()
   };
 
   fromAndOf(): void{
@@ -75,9 +85,29 @@ export class AppComponent implements AfterViewInit, OnInit {
       this.renderer.appendChild(listItem, listText);
       this.renderer.appendChild(this.ofListRef.nativeElement, listItem)
     });
-    this.animalName$ = from(['zebra', 'lion', 'donkey']);
-    this.animalName$.subscribe((data)=>{
-      console.log(data)
+    this.animalName$ = from(['zebra', 'lion', 'donkey']).pipe(toArray());
+  }
+
+  createObservable(): void{
+    let count = 0;
+    this.flower$ = Observable.create((observer: Observer<string>)=>{
+      setInterval(()=>{
+        if(count === 4){
+          observer.complete();
+        }else{
+          observer.next('rose ' + count);
+          count++;
+        }
+      }, 2000)
     })
+    this.flower$
+    .pipe(map((data)=> data + ' hootaa'))
+    .subscribe((data)=>{
+      this.flowersArr.push(data);
+    })
+  }
+
+  handleStopUntil(): void{
+    this.stopInterval$.next(true)
   }
 }
