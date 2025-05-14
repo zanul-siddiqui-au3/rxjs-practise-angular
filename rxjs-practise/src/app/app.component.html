@@ -74,5 +74,23 @@
       </ul>
     </div>
   </div>
-</div>
 
+  <div class="row">
+    <h1 class="text-center text-primary mt-5" >Retry, RetryWhen, Scan, Delay</h1>
+    <div class="col-6">
+      <button class="btn btn-primary" (click)="fetchDetails()">Fetch Details {{ retryCount ? retryCount : '' }}</button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-primary text-center">Distinct & Distinct Until Changed</h2>
+      <input type="text" class="form-control" placeholder="search here" aria-label="Server" #distinctInput >
+      <p [ngClass]="{'text-success': searchingValue.length}">Searching start... {{ searchingValue }}</p>
+    </div>
+  </div>
+
+  <div class="row mb-10">
+    <h1>asdadasd</h1>
+  </div>
+</div>

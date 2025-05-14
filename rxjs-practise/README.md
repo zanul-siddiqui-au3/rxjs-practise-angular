@@ -28,3 +28,8 @@
    - filter() it's pipable operator helps filter emitted data i.e filter((data)=> data.length > 2)
    - tap() it's a pipable operator which didn't modify/change emitted data it only uses for handling side effects like logging, debugging etc.
    -takeUntil() it's a pipable operator emits a value by the source observable until notifier emits a value
+   -retry(howManyTimes, delayTimeMs | (err, retryCount)=> ) it's a pipable opreator which retry after subsequent intervals
+   -scan((accum, current)=> newValue, startingValue) it's helps to modify stream of emitted data that allows to accumlate and transform emitted values over time
+   -debounceTime(debounceTimeInMs) it'll emits notification after time has passed value didn't changed
+   -distinctUntilChanged() it'll not emit new values until last emitted should be different from new one
+   

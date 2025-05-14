@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, Renderer2, OnInit } from '@angular/core';
-import { from, fromEvent, interval, map, Observable, Observer, of, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
-
+import { debounce, debounceTime, distinct, distinctUntilChanged, from, fromEvent, interval, map, Observable, Observer, of, retry, retryWhen, scan, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +34,14 @@ export class AppComponent implements AfterViewInit, OnInit {
   stopInterval$: Subject<boolean> = new Subject();
   takeUntilInterval$: Observable<number[]> = interval(1000).pipe(takeUntil(this.stopInterval$),toArray());
 
-  constructor(private readonly renderer: Renderer2){}
+  // retry, scan
+  retryCount = 0;
+
+  // debounceTime & distictUntilChanged
+  @ViewChild('distinctInput', {static: true}) distinctInputRef!: ElementRef;
+  searchingValue = ''
+  
+  constructor(private readonly renderer: Renderer2, private readonly http: HttpClient){}
 
   ngAfterViewInit(): void {
     fromEvent(this.eventBtnRef.nativeElement, 'click')
@@ -74,7 +81,8 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.fromAndOf();
-    this.createObservable()
+    this.createObservable();
+    this.handleDistinct();
   };
 
   fromAndOf(): void{
@@ -109,5 +117,32 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   handleStopUntil(): void{
     this.stopInterval$.next(true)
+  }
+
+  fetchDetails(): void{
+    this.http
+      .get('https://jsonplaceholder.typicode.com/posts')
+      .pipe(
+        retry({count: 4, delay: 2000}),
+        scan((accu: any, curr: any)=>{
+          return [...accu, curr.title];
+        }, [])
+      )
+      .subscribe((data)=>{
+        console.log(data)
+      })
+  }
+
+  handleDistinct(): void{
+    fromEvent<KeyboardEvent>(this.distinctInputRef.nativeElement, 'keyup')
+    .pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    )
+    .subscribe((data: KeyboardEvent)=>{
+      console.log('happen')
+      const input = data.target as HTMLInputElement;
+      this.searchingValue = input.value;
+    })
   }
 }
