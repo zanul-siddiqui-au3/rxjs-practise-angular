@@ -30,6 +30,14 @@
    -takeUntil() it's a pipable operator emits a value by the source observable until notifier emits a value
    -retry(howManyTimes, delayTimeMs | (err, retryCount)=> ) it's a pipable opreator which retry after subsequent intervals
    -scan((accum, current)=> newValue, startingValue) it's helps to modify stream of emitted data that allows to accumlate and transform emitted values over time
-   -debounceTime(debounceTimeInMs) it'll emits notification after time has passed value didn't changed
+   -debounceTime(debounceTimeInMs) it'll emits notification after time has passed
    -distinctUntilChanged() it'll not emit new values until last emitted should be different from new one
-   
+   -new subject() it's a special type of operator which works as observable and observer at same time some. So, we can emit new values and listen to new emitted values
+   -new ehaviourSubject(DefaultVlaue) it's same a subject but it requires default value while intializing
+   - new ReplaySubject(lastEmittedValues) it's same as subject but it remember last emitted values that have been passed 
+   - new AsyncSubject() it takes multiple emitted values but only return last value when subscription is completed
+   - merge(obs1, obs2, obs3) combine multiple observables value in one in their emitted order it maintains it's sequence
+   - concat(obs1,obs2,obs3) combine multiple observables value in one in the sequence it only add new values when previous observable is completed
+   - mergeMap() It's flattening operator which takes value of maps value from source observable to an inner observable without preserving the order of emissions. It uses when sequence is not a matter when we need to make concurrent requests.
+   - concatMap() It's also flattening operator which map values from source observable to an inner observable while maintaing it's sequence. It' uses when sequence is matter like upload multiple files one after another.
+      

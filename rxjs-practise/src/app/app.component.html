@@ -90,7 +90,61 @@
     </div>
   </div>
 
-  <div class="row mb-10">
-    <h1>asdadasd</h1>
+  <div class="row">
+    <h2 class="text-primary text-center">ReplaySubject</h2>
+    <div class="row">
+        <div class="col-8">
+          <input type="text" class="form-control" placeholder="search here" aria-label="Server" #replayInput >
+         </div>
+         <div class="col-4">
+          <button class="btn btn-primary" (click)="handleReplaySearch(replayInput.value)"> Search</button>
+         </div>
+    </div>
+    <div class="col-6">
+      <h1 class="text-secondary">List 1: </h1>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let count of list1Items">
+          {{ count }}
+        </li>
+      </ul>
+    </div>
+    <div class="col-6">
+      <h1 class="text-secondary">List 2: </h1>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let count of list2Items">
+          {{ count }}
+        </li>
+      </ul>
+      <button class="btn btn-success" (click)="handleSubList2()">Subscribe</button>      
+    </div>
+  </div>
+
+  <div class="row">
+    <h2 class="text-primary text-center">Concat & Merge</h2>
+    <div class="col-6">
+      <ul class="list-group" #concatList></ul>
+    </div>
+    <div class="col-6">
+      <ul class="list-group" #mergeList></ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-primary text-center">
+        Merge Map
+      </h1>
+      <ul class="list-group" #mergeMapList></ul>
+    </div>
+  </div>
+
+    <div class="row">
+    <div class="col-12">
+      <h1 class="text-primary text-center">
+        Concat Map
+      </h1>
+      <ul class="list-group" #concatMapList></ul>
+    </div>
   </div>
 </div>
+

@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, Renderer2, OnInit } from '@angular/core';
-import { debounce, debounceTime, distinct, distinctUntilChanged, from, fromEvent, interval, map, Observable, Observer, of, retry, retryWhen, scan, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
+import { concat, concatMap, debounce, debounceTime, distinct, distinctUntilChanged, from, fromEvent, interval, map, merge, mergeMap, Observable, Observer, of, ReplaySubject, retry, retryWhen, scan, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -39,8 +39,29 @@ export class AppComponent implements AfterViewInit, OnInit {
 
   // debounceTime & distictUntilChanged
   @ViewChild('distinctInput', {static: true}) distinctInputRef!: ElementRef;
-  searchingValue = ''
-  
+  searchingValue = '';
+
+  // ReplaySubject
+  list1Items: string[] = [];
+  list2Items: string[] = [];
+  listItemsReplay$: ReplaySubject<string> = new ReplaySubject<string>(4);
+
+  // Concat & Merge
+  techVideo$ = interval(1000).pipe(map((v, i)=> `Tech Video ${i+ 1}`), take(3));
+  comdeyVideo$ = interval(2000).pipe(map((v, i)=> `Comdey Video ${i+ 1}`),take(4));
+  roastVideo$ = interval(1500).pipe(map((v, i)=> `Roast Video ${i+ 1}`),take(3));
+  @ViewChild('concatList') concatListRef !: ElementRef;
+  @ViewChild('mergeList') mergeListRef !: ElementRef;
+
+  // MergeMap
+  mergeCount$ = interval(1000).pipe(take(2), mergeMap((_val)=> interval(2000).pipe(take(3),map((val, i)=> `Video ${val + 1} - ${i * (val + 1)}`))))
+  @ViewChild('mergeMapList', {static: true}) mergeMapListRef!: ElementRef;
+
+  // ConcatMap
+  videoList$ = from(['Tech', 'Comedy', 'Horror']);
+  concatList$ = this.videoList$.pipe(concatMap((val)=> interval(2000).pipe(take(3), map((data, index)=> `${val} Video - ${index + 1}`))))
+  @ViewChild('concatMapList', {static: true}) concatMapListRef!: ElementRef;
+
   constructor(private readonly renderer: Renderer2, private readonly http: HttpClient){}
 
   ngAfterViewInit(): void {
@@ -83,6 +104,12 @@ export class AppComponent implements AfterViewInit, OnInit {
     this.fromAndOf();
     this.createObservable();
     this.handleDistinct();
+    this.listItemsReplay$.subscribe((data: string)=>{
+      this.list1Items.push(data)
+    });
+    this.handleConcatAndMerge();
+    this.handleMergeMap();
+    this.handleConcatMap()
   };
 
   fromAndOf(): void{
@@ -144,5 +171,44 @@ export class AppComponent implements AfterViewInit, OnInit {
       const input = data.target as HTMLInputElement;
       this.searchingValue = input.value;
     })
+  }
+
+  handleReplaySearch(value: string): void{
+    this.listItemsReplay$.next(value);
+  }
+
+  handleSubList2(): void{
+    this.listItemsReplay$.subscribe((data: string)=>{
+      this.list2Items.push(data)
+    })
+  }
+
+  handleConcatAndMerge(): void{
+    concat(this.techVideo$, this.comdeyVideo$, this.roastVideo$).subscribe((video)=>{
+      this.printList(this.concatListRef, video);
+    });
+    merge(this.techVideo$, this.comdeyVideo$, this.roastVideo$).subscribe((video)=>{
+      this.printList(this.mergeListRef, video);
+    });
+  }
+
+  handleMergeMap(): void{
+    this.mergeCount$.subscribe((val)=>{
+      this.printList(this.mergeMapListRef, val);
+    })
+  }
+
+  handleConcatMap(): void{
+    this.concatList$.subscribe((data)=>{
+      this.printList(this.concatMapListRef, data);
+    })
+  }
+
+  printList(ulRef: ElementRef, data: string): void{
+    const newLi = this.renderer.createElement('li');
+    const text = this.renderer.createText(data);
+    this.renderer.addClass(newLi, 'list-group-item');
+    this.renderer.appendChild(newLi, text);
+    this.renderer.appendChild(ulRef.nativeElement, newLi);
   }
 }
