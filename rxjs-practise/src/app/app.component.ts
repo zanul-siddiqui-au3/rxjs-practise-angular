@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, Renderer2, OnInit } from '@angular/core';
-import { concat, concatMap, debounce, debounceTime, distinct, distinctUntilChanged, from, fromEvent, interval, map, merge, mergeMap, Observable, Observer, of, ReplaySubject, retry, retryWhen, scan, Subject, Subscription, take, takeUntil, timer, toArray } from 'rxjs';
+import { concat, concatMap, debounce, debounceTime, distinct, distinctUntilChanged, from, fromEvent, interval, map, merge, mergeMap, Observable, Observer, of, pluck, ReplaySubject, retry, retryWhen, scan, Subject, Subscription, switchMap, take, takeUntil, timer, toArray } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -62,6 +62,10 @@ export class AppComponent implements AfterViewInit, OnInit {
   concatList$ = this.videoList$.pipe(concatMap((val)=> interval(2000).pipe(take(3), map((data, index)=> `${val} Video - ${index + 1}`))))
   @ViewChild('concatMapList', {static: true}) concatMapListRef!: ElementRef;
 
+  // SwitchMap
+  @ViewChild('searchInputUser', {static: true}) searchInputUser !: ElementRef;
+  searchedUser = []
+
   constructor(private readonly renderer: Renderer2, private readonly http: HttpClient){}
 
   ngAfterViewInit(): void {
@@ -109,7 +113,8 @@ export class AppComponent implements AfterViewInit, OnInit {
     });
     this.handleConcatAndMerge();
     this.handleMergeMap();
-    this.handleConcatMap()
+    this.handleConcatMap();
+    this.handleSwitchMap();
   };
 
   fromAndOf(): void{
@@ -201,6 +206,26 @@ export class AppComponent implements AfterViewInit, OnInit {
   handleConcatMap(): void{
     this.concatList$.subscribe((data)=>{
       this.printList(this.concatMapListRef, data);
+    })
+  }
+
+  handleSwitchMap(): void{
+    fromEvent(this.searchInputUser.nativeElement, 'keyup')
+    .pipe(
+      // debounceTime(500),
+      distinctUntilChanged(),
+      switchMap((data: any)=> this.http.get(`https://dummyjson.com/users/search`, {
+        params: {
+          q: data.target.value
+        }
+      })),
+      pluck('users'),
+      map((user: any)=> {
+        return user.map((ele: any)=> ele.firstName)
+      })
+    )
+    .subscribe((data: any)=>{
+      this.searchedUser = data;
     })
   }
 

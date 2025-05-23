@@ -33,11 +33,16 @@
    -debounceTime(debounceTimeInMs) it'll emits notification after time has passed
    -distinctUntilChanged() it'll not emit new values until last emitted should be different from new one
    -new subject() it's a special type of operator which works as observable and observer at same time some. So, we can emit new values and listen to new emitted values
-   -new ehaviourSubject(DefaultVlaue) it's same a subject but it requires default value while intializing
+   -new BehaviourSubject(DefaultVlaue) it's same a subject but it requires default value while intializing
    - new ReplaySubject(lastEmittedValues) it's same as subject but it remember last emitted values that have been passed 
    - new AsyncSubject() it takes multiple emitted values but only return last value when subscription is completed
    - merge(obs1, obs2, obs3) combine multiple observables value in one in their emitted order it maintains it's sequence
    - concat(obs1,obs2,obs3) combine multiple observables value in one in the sequence it only add new values when previous observable is completed
    - mergeMap() It's flattening operator which takes value of maps value from source observable to an inner observable without preserving the order of emissions. It uses when sequence is not a matter when we need to make concurrent requests.
    - concatMap() It's also flattening operator which map values from source observable to an inner observable while maintaing it's sequence. It' uses when sequence is matter like upload multiple files one after another.
-      
+   - switchMap() It's a flattening operator which map source observable to an inner observable but only subscribes to last observable and cancelling remaining observable
+   - exhaustMap() It's a flattening operator which map source observable to an inner observable but it ignores new ones while one is already running 
+   - combineLatest(obs1 , obs2) it's combine data emitted by an observable in their sequence
+   - obs1.pipe(withLatestFrom(obs2)) it's combine the data only when outer observable emit new data
+   - forkJoin(obs1, obs2) it'll emit result only when both observable is completed it's behave same like Promise.all()
+   - zip(obs1, obs2) it'll emit data when of both obserable emit new values and return emitted data as an Array
